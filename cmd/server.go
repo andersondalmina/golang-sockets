@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"net"
 	"os"
-	"time"
+
+	"github.com/andersondalmina/golang-sockets/persist"
+	"github.com/andersondalmina/golang-sockets/sockets"
 
 	"github.com/spf13/cobra"
 )
@@ -17,34 +18,11 @@ var serverCmd = &cobra.Command{
 	Use:   "server port",
 	Short: "Initialize the TCP Server",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(os.Args) != 3 {
-			fmt.Fprintf(os.Stderr, "Usage: %s %s port\n", os.Args[0], os.Args[1])
-			os.Exit(1)
-		}
+		persist.CreateDatabase()
 
-		port := os.Args[2]
-		tcpAddr, err := net.ResolveTCPAddr("tcp4", port)
-		checkError(err)
+		fmt.Println("Socket server starting")
 
-		listener, err := net.ListenTCP("tcp", tcpAddr)
-		checkError(err)
-
-		fmt.Printf("Server listening at port %s\n", port)
-
-		for {
-			conn, err := listener.Accept()
-			if err != nil {
-				continue
-			}
-
-			handleClient(conn)
-		}
+		server := sockets.CreateSocketServer(os.Getenv("SOCKET_HOST"), os.Getenv("SOCKET_PORT"))
+		server.Listen()
 	},
-}
-
-func handleClient(conn net.Conn) {
-	defer conn.Close()
-
-	daytime := time.Now().String()
-	conn.Write([]byte(daytime))
 }
