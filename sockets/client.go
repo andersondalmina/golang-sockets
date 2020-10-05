@@ -6,7 +6,7 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-const bufferSize = 1024 * 100
+const bufferSize = 1024 * 1024
 
 // SocketClient is a struct to socket client
 type SocketClient struct {
@@ -28,7 +28,7 @@ func CreateSocketClient(host string, port string) SocketClient {
 }
 
 // Send a message to socket
-func (s *SocketClient) Send(action string, Param string) {
+func (s *SocketClient) Send(action string, Param map[string]string) {
 	b, err := msgpack.Marshal(&SocketData{
 		Action: action,
 		Param:  Param,

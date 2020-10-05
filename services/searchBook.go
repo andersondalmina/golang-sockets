@@ -6,19 +6,21 @@ import (
 )
 
 // SearchBookMenu open search book menu
-func SearchBookMenu() (action string, params string, err error) {
+func SearchBookMenu() (action string, params map[string]string, err error) {
 	prompt := promptui.Select{
 		Label: "Search a book",
-		Items: []string{"By title", "By author", "By year", "By code"},
+		Items: []string{"By title", "By author", "By year", "By edition"},
 	}
 
 	_, result, err := prompt.Run()
-	checkError(err)
+	if err != nil {
+		return "", nil, err
+	}
 
 	return handleSearchBookMenu(result)
 }
 
-func handleSearchBookMenu(item string) (action string, params string, err error) {
+func handleSearchBookMenu(item string) (action string, params map[string]string, err error) {
 	switch item {
 	case "By title":
 		prompt := promptui.Prompt{
@@ -26,41 +28,61 @@ func handleSearchBookMenu(item string) (action string, params string, err error)
 		}
 
 		title, err := prompt.Run()
-		checkError(err)
+		params := map[string]string{
+			"title": title,
+		}
 
-		return "searchBookByTitle", title, nil
+		return "searchBookByTitle", params, err
 	case "By author":
 		prompt := promptui.Prompt{
 			Label: "Author",
 		}
 
 		author, err := prompt.Run()
-		checkError(err)
+		params := map[string]string{
+			"author": author,
+		}
 
-		return "searchBookByAuthor", author, nil
+		return "searchBookByAuthor", params, err
 	case "By year":
 		prompt := promptui.Prompt{
 			Label: "Published Year",
 		}
 
 		year, err := prompt.Run()
-		checkError(err)
-
-		return "searchBookByYear", year, nil
-	case "By code":
-		prompt := promptui.Prompt{
-			Label: "Book Code",
+		params := map[string]string{
+			"year": year,
 		}
 
-		number, err := prompt.Run()
-		checkError(err)
+		return "searchBookByYear", params, err
+	case "By edition":
+		prompt := promptui.Prompt{
+			Label: "Book Edition",
+		}
 
-		return "searchBookByCode", number, nil
+		edition, err := prompt.Run()
+		params := map[string]string{
+			"edition": edition,
+		}
+
+		return "searchBookByEdition", params, err
 	}
 
-	return "", "", nil
+	return "", nil, nil
 }
 
 func SearchBooksByTitle(title string) []persist.Book {
 	return persist.SearchBookByTitle(title)
+}
+
+func SearchBooksByAuthor(author string) []persist.Book {
+	return persist.SearchBookByAuthor(author)
+}
+
+func SearchBooksByYear(year string) []persist.Book {
+	return persist.SearchBookByYear(year)
+}
+
+func SearchBooksByEdition(edition string) []persist.Book {
+	return persist.SearchBooksByEdition(edition)
 }

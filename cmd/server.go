@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/andersondalmina/golang-sockets/persist"
 	"github.com/andersondalmina/golang-sockets/sockets"
@@ -15,14 +14,15 @@ func init() {
 }
 
 var serverCmd = &cobra.Command{
-	Use:   "server port",
+	Use:   "server [host] [port]",
 	Short: "Initialize the TCP Server",
+	Args:  cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		persist.CreateDatabase()
 
 		fmt.Println("Socket server starting")
 
-		server := sockets.CreateSocketServer(os.Getenv("SOCKET_HOST"), os.Getenv("SOCKET_PORT"))
+		server := sockets.CreateSocketServer(args[0], args[1])
 		server.Listen()
 	},
 }
