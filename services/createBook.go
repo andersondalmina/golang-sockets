@@ -10,6 +10,24 @@ import (
 
 func CreateBookMenu() (string, map[string]string, error) {
 	prompt := promptui.Prompt{
+		Label: "Book Code",
+		Validate: func(input string) error {
+			_, err := strconv.ParseFloat(input, 64)
+			if err != nil {
+				return errors.New("Invalid number")
+			}
+
+			if len(input) > 5 {
+				return errors.New("Max length 5")
+			}
+
+			return nil
+		},
+	}
+
+	code, err := prompt.Run()
+
+	prompt = promptui.Prompt{
 		Label: "Book Title",
 	}
 
@@ -24,14 +42,15 @@ func CreateBookMenu() (string, map[string]string, error) {
 	prompt = promptui.Prompt{
 		Label: "Book Edition",
 		Validate: func(input string) error {
-			if len(input) > 1 {
-				return errors.New("Max length 1")
-			}
-
 			_, err := strconv.ParseFloat(input, 64)
 			if err != nil {
 				return errors.New("Invalid number")
 			}
+
+			if len(input) > 1 {
+				return errors.New("Max length 1")
+			}
+
 			return nil
 		},
 	}
@@ -41,14 +60,15 @@ func CreateBookMenu() (string, map[string]string, error) {
 	prompt = promptui.Prompt{
 		Label: "Book Year",
 		Validate: func(input string) error {
-			if len(input) > 4 {
-				return errors.New("Max length 4")
-			}
-
 			_, err := strconv.ParseFloat(input, 64)
 			if err != nil {
 				return errors.New("Invalid number")
 			}
+
+			if len(input) > 4 {
+				return errors.New("Max length 4")
+			}
+
 			return nil
 		},
 	}
@@ -56,6 +76,7 @@ func CreateBookMenu() (string, map[string]string, error) {
 	year, err := prompt.Run()
 
 	params := map[string]string{
+		"code":    code,
 		"title":   title,
 		"author":  author,
 		"edition": edition,
@@ -66,6 +87,11 @@ func CreateBookMenu() (string, map[string]string, error) {
 }
 
 func CreateBook(p map[string]string) (persist.Book, error) {
+	code, err := strconv.Atoi(p["code"])
+	if err != nil {
+		panic(err)
+	}
+
 	edition, err := strconv.Atoi(p["edition"])
 	if err != nil {
 		panic(err)
@@ -76,5 +102,5 @@ func CreateBook(p map[string]string) (persist.Book, error) {
 		panic(err)
 	}
 
-	return persist.CreateBook(p["title"], p["author"], int64(edition), int64(year))
+	return persist.CreateBook(int64(code), p["title"], p["author"], int64(edition), int64(year))
 }

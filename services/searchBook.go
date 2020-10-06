@@ -55,6 +55,11 @@ func handleSearchBookMenu(item string) (action string, params map[string]string,
 				if err != nil {
 					return errors.New("Invalid number")
 				}
+
+				if len(input) > 4 {
+					return errors.New("Max length 4")
+				}
+
 				return nil
 			},
 		}
@@ -73,6 +78,11 @@ func handleSearchBookMenu(item string) (action string, params map[string]string,
 				if err != nil {
 					return errors.New("Invalid number")
 				}
+
+				if len(input) > 1 {
+					return errors.New("Max length 1")
+				}
+
 				return nil
 			},
 		}

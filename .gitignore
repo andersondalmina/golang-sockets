@@ -2,3 +2,4 @@
 .DS_Store
 .env
 golang_sockets
+golang_sockets_unix

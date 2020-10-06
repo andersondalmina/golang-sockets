@@ -47,16 +47,21 @@ func GetBookByID(id int64) (Book, error) {
 	return book, err
 }
 
-func CreateBook(title string, author string, edition int64, year int64) (Book, error) {
-	book := Book{
-		ID:      12345,
+func CreateBook(code int64, title string, author string, edition int64, year int64) (Book, error) {
+	book, err := GetBookByID(code)
+	if book.ID > 0 {
+		return book, fmt.Errorf("Already exist a book with code %d", code)
+	}
+
+	book = Book{
+		ID:      code,
 		Title:   title,
 		Author:  author,
 		Edition: edition,
 		Year:    year,
 	}
 
-	_, err := db.Model(&book).Insert()
+	_, err = db.Model(&book).Insert()
 	if err != nil {
 		panic(err)
 	}

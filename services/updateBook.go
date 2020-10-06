@@ -16,6 +16,7 @@ func UpdateBookMenu() (string, map[string]string, error) {
 			if err != nil {
 				return errors.New("Invalid number")
 			}
+
 			return nil
 		},
 	}
@@ -37,14 +38,15 @@ func UpdateBookMenu() (string, map[string]string, error) {
 	prompt = promptui.Prompt{
 		Label: "Book Edition",
 		Validate: func(input string) error {
-			if len(input) > 1 {
-				return errors.New("Max length 1")
-			}
-
 			_, err := strconv.ParseFloat(input, 64)
 			if err != nil {
 				return errors.New("Invalid number")
 			}
+
+			if len(input) > 1 {
+				return errors.New("Max length 1")
+			}
+
 			return nil
 		},
 	}
@@ -54,14 +56,15 @@ func UpdateBookMenu() (string, map[string]string, error) {
 	prompt = promptui.Prompt{
 		Label: "Book Year",
 		Validate: func(input string) error {
-			if len(input) > 4 {
-				return errors.New("Max length 4")
-			}
-
 			_, err := strconv.ParseFloat(input, 64)
 			if err != nil {
 				return errors.New("Invalid number")
 			}
+
+			if len(input) > 4 {
+				return errors.New("Max length 4")
+			}
+
 			return nil
 		},
 	}

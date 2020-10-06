@@ -82,10 +82,13 @@ func handleSocketData(d SocketData, r *SocketReply) {
 	case "createBook":
 		book, err := services.CreateBook(d.Param)
 
-		json, err := json.Marshal(book)
-		checkError(err)
+		if err == nil {
+			json, err := json.Marshal(book)
+			checkError(err)
 
-		r.Data = json
+			r.Data = json
+		}
+
 		r.Error = err
 
 	case "updateBook":
