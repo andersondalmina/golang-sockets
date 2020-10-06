@@ -2,6 +2,7 @@ package persist
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
@@ -137,9 +138,13 @@ func SearchBookByYear(year string) []Book {
 
 func DeleteBooksByTitle(title string) error {
 	var book Book
-	_, err := db.Model(&book).
+	r, err := db.Model(&book).
 		Where("TRIM(titulo) = ?", title).
 		Delete()
+
+	if r.RowsAffected() == 0 {
+		return errors.New("None book was found with this title")
+	}
 
 	return err
 }

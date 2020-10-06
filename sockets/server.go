@@ -35,7 +35,6 @@ func (s *SocketServer) Listen() {
 	for {
 		conn, err := s.listener.Accept()
 		fmt.Printf("Client Connected: %s\n", conn.LocalAddr())
-		fmt.Println(err)
 
 		if err != nil {
 			continue
@@ -67,12 +66,10 @@ func handleClient(conn net.Conn) {
 	handleSocketData(d, &r)
 
 	b, err := msgpack.Marshal(r)
-
 	checkError(err)
+
 	_, err = conn.Write(b)
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 }
 
 // Close the connection with the socket
@@ -138,8 +135,6 @@ func handleSocketData(d SocketData, r *SocketReply) {
 
 	case "deleteBookByTitle":
 		err := services.DeleteBooksByTitle(d.Param["title"])
-		checkError(err)
-
 		r.Error = err
 	}
 }

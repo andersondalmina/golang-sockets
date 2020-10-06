@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+	"strconv"
+
 	"github.com/andersondalmina/golang-sockets/persist"
 	"github.com/manifoldco/promptui"
 )
@@ -47,6 +50,13 @@ func handleSearchBookMenu(item string) (action string, params map[string]string,
 	case "By year":
 		prompt := promptui.Prompt{
 			Label: "Published Year",
+			Validate: func(input string) error {
+				_, err := strconv.ParseFloat(input, 64)
+				if err != nil {
+					return errors.New("Invalid number")
+				}
+				return nil
+			},
 		}
 
 		year, err := prompt.Run()
@@ -58,6 +68,13 @@ func handleSearchBookMenu(item string) (action string, params map[string]string,
 	case "By edition":
 		prompt := promptui.Prompt{
 			Label: "Book Edition",
+			Validate: func(input string) error {
+				_, err := strconv.ParseFloat(input, 64)
+				if err != nil {
+					return errors.New("Invalid number")
+				}
+				return nil
+			},
 		}
 
 		edition, err := prompt.Run()

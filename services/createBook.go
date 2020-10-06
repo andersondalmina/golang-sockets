@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/andersondalmina/golang-sockets/persist"
@@ -22,12 +23,34 @@ func CreateBookMenu() (string, map[string]string, error) {
 
 	prompt = promptui.Prompt{
 		Label: "Book Edition",
+		Validate: func(input string) error {
+			if len(input) > 1 {
+				return errors.New("Max length 1")
+			}
+
+			_, err := strconv.ParseFloat(input, 64)
+			if err != nil {
+				return errors.New("Invalid number")
+			}
+			return nil
+		},
 	}
 
 	edition, err := prompt.Run()
 
 	prompt = promptui.Prompt{
 		Label: "Book Year",
+		Validate: func(input string) error {
+			if len(input) > 4 {
+				return errors.New("Max length 4")
+			}
+
+			_, err := strconv.ParseFloat(input, 64)
+			if err != nil {
+				return errors.New("Invalid number")
+			}
+			return nil
+		},
 	}
 
 	year, err := prompt.Run()

@@ -24,9 +24,9 @@ var clientCmd = &cobra.Command{
 	Short: "Initialize the TCP Client",
 	Args:  cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		socketClient = sockets.CreateSocketClient(args[0], args[1])
-
 		for {
+			socketClient = sockets.CreateSocketClient(args[0], args[1])
+
 			action, params, err := openMenu()
 			checkError(err)
 
@@ -68,19 +68,18 @@ func handleMenu(item string) (action string, params map[string]string, err error
 }
 
 func handleSocketData(action string, r sockets.SocketReply) {
+	socketClient.Close()
+
+	if r.Error != nil {
+		fmt.Printf("Error: %s\n\n", r.Error)
+		return
+	}
+
 	switch action {
 	case "createBook":
-		if r.Error != nil {
-			fmt.Printf("Error on creating book: %s\n", r.Error)
-		}
-
 		fmt.Println("Book created successfully")
 
 	case "updateBook":
-		if r.Error != nil {
-			fmt.Printf("Error on updating book: %s\n", r.Error)
-		}
-
 		fmt.Println("Book updated successfully")
 
 	case "searchBookByTitle", "searchBookByAuthor", "searchBookByYear", "searchBookByEdition":
@@ -91,11 +90,6 @@ func handleSocketData(action string, r sockets.SocketReply) {
 		services.DisplayBooks(books)
 
 	case "deleteBookByTitle":
-		if r.Status == 404 {
-			fmt.Println("Book not found")
-			return
-		}
-
 		fmt.Println("Book removed successfully")
 	}
 
